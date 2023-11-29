@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from math import dist
+from math import dist, atan2, cos, sin, sqrt
 
 # Global Variables
-start_point = np.array([2, 1])
-goal = np.array([-2, 1])
+start_point = np.array([1, 1])
+goal = np.array([-1, 0.99])
 obstacle = np.array([0,1])
 
 # Potential parameters
@@ -13,6 +13,11 @@ goal_potential = 10
 
 # Gradient Descent Parameters
 learning_rate = 5E-4
+
+# Link Parameters
+l1 = 1.0
+l2 = 1.0
+DT = 0.1
 
 # Define the potential function
 def calculate_potential(X, Y):    
@@ -47,7 +52,6 @@ def gradient_descent(gradient, start, learning_rate):
             print("Path Planning Success")
             break            
     
-    print(dist(current, goal))
     return np.array(trajectory)
 
 # Plot the potential field on a 3D subplot
@@ -62,6 +66,23 @@ def plot_potential(X, Y, Z):
     plt.show()
     return
 
+# Perform IK 
+def IK(trajectory):
+    joint_angles = []
+    for points in trajectory:
+        xd = points[0]
+        yd = points[1]
+        # Solver
+        c_theta2 = (((xd**2) + (yd**2)  - (l1**2) - (l2**2)) / (2*l1*l2))
+        s_theta2 = sqrt(1.0 - (c_theta2**2))
+        theta2 = atan2(s_theta2,c_theta2)
+        M = l1 + l2*cos(theta2)
+        N = l2*sin(theta2)
+        gamma = atan2(N,M)
+        theta1 = atan2(yd,xd) - gamma
+        joint_angles.append([theta1, theta2])
+    return joint_angles
+
 # Set up the Workspace
 x = np.linspace(-2, 2, 100)
 y = np.linspace(-2, 2, 100)
@@ -75,6 +96,11 @@ plot_potential(X, Y, Z)
 
 # Perform gradient descent to determine the trajectory
 trajectory = gradient_descent(gradient_f, start_point, learning_rate)
+
+# Perform IK to get joint angles
+joint_angles = IK(trajectory)
+
+print(joint_angles)
 
 # Plot the contour and the trajectory
 fig = plt.figure()
