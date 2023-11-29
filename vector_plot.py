@@ -6,14 +6,14 @@ def f(X,Y):
     obstacle = [0, 0]
     obstacle_potential = 0.1
     goal_potential = 1
-    goal_list = [-2, -2]
+    goal = [-2, -2]
     # pot = ((1/((X - obstacle[0]) ** 2 + (Y - obstacle[1]) ** 2)) * obstacle_potential + ((X - goal_list[0]) ** 2 + (Y - goal_list[1]) ** 2) * goal_potential )
     try:
-        Fxg = -goal_potential*(X - goal_list[0])/((((X - goal_list[0]) ** 2 + (Y - goal_list[1]) ** 2))**0.5)
+        Fxg = -goal_potential*(X - goal[0])/((((X - goal[0]) ** 2 + (Y - goal[1]) ** 2))**0.5)
 
-        Fyg = -goal_potential*(X - goal_list[1])/((((X - goal_list[0]) ** 2 + (Y - goal_list[1]) ** 2))**0.5)
-        Fxo = -obstacle_potential*(X - obstacle[0])/((((X[0] - obstacle[0]) ** 2 + (X[1] - obstacle[1]) ** 2))**1.5)
-        Fyo = -obstacle_potential*(X[1] - obstacle[1])/((((X[0] - obstacle[0]) ** 2 + (X[1] - obstacle[1]) ** 2))**1.5)
+        Fyg = -goal_potential*(Y - goal[1])/((((X - goal[0]) ** 2 + (Y - goal[1]) ** 2))**0.5)
+        Fxo = obstacle_potential*(X - obstacle[0])/((((X - obstacle[0]) ** 2 + (Y - obstacle[1]) ** 2))**1.5)
+        Fyo = obstacle_potential*(Y - obstacle[1])/((((X - obstacle[0]) ** 2 + (Y - obstacle[1]) ** 2))**1.5)
     except:
         Fxg = 0
         Fyg = 0
@@ -24,8 +24,8 @@ def f(X,Y):
 
 def potential(X, Y):
     obstacle = [0,0]
-    obstacle_potential = 1
-    goal_potential = 100
+    obstacle_potential = 0.1
+    goal_potential = 10
     goal_list = [-2, -2]
     return ((1/((X - obstacle[0]) ** 2 + (Y - obstacle[1]) ** 2)) * obstacle_potential + ((X - goal_list[0]) ** 2 + (Y - goal_list[1]) ** 2) * goal_potential )
 
@@ -39,9 +39,9 @@ def plot_potential(X, Y, Z):
     ax.set_title('3D Potential Field')
     plt.show()
     return
+
+
 # Meshgrid
-# X = np.linspace(-5,5)
-# Y = np.linspace(-5,5)
 
 x, y= np.meshgrid(np.linspace(-2,2, 100), np.linspace(-2,2, 100))
 
